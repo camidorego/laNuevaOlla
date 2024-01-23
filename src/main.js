@@ -495,8 +495,61 @@ function cargarArco(posicionX, posicionZ, rotacionY) {
   );
 }
 
+function Pelota(velocidadX,velocidadY,velocidadZ){
+  const geometry=new THREE.SphereGeometry(0.15, 12, 12);
+  const pelotaTexture=new THREE.TextureLoader().load('img/soccer.png');
+  pelotaTexture.wrapS=pelotaTexture.wrapT=THREE.RepeatWrapping
+  pelotaTexture.repeat.set(1, 1);
+  const material=new THREE.MeshBasicMaterial({side:THREE.DoubleSide, map:pelotaTexture});
+  const pelota=new THREE.Mesh(geometry,material);
+  
+
+  pelota.position.set(8,0.5,0)
+  scene.add(pelota)
+
+  function animate(){
+    pelota.position.x += velocidadX;
+    pelota.position.y += velocidadY;
+    pelota.position.z += velocidadZ;
+
+  //   // Lógica simple para simular rebotes en las paredes de la cancha
+  //   if (pelota.position.x > 10 || pelota.position.x < 0) {
+  //     velocidadX *= -1; // Invertir la dirección en el eje X al llegar a los extremos
+  //   }
+
+  //   if (pelota.position.z > 6 || pelota.position.z < 0) {
+  //     velocidadZ *= -1; // Invertir la dirección en el eje Z al llegar a los extremos
+  //   }
+
+  //   // Llamada a requestAnimationFrame para crear un bucle de animación
+  //   requestAnimationFrame(animate);
+  // }
+  // Lógica para mantener la pelota dentro de los bordes de la cancha
+    if (pelota.position.x + pelota.geometry.parameters.radius > 9) {
+      pelota.position.x = 9 - pelota.geometry.parameters.radius;
+      velocidadX *= -1; // Invertir la dirección en el eje X
+    } else if (pelota.position.x - pelota.geometry.parameters.radius < -9) {
+      pelota.position.x = -9 + pelota.geometry.parameters.radius;
+      velocidadX *= -1; // Invertir la dirección en el eje X
+    }
+
+    if (pelota.position.z + pelota.geometry.parameters.radius > 5) {
+      pelota.position.z = 5 - pelota.geometry.parameters.radius;
+      velocidadZ *= -1; // Invertir la dirección en el eje Z
+    } else if (pelota.position.z - pelota.geometry.parameters.radius < -5) {
+      pelota.position.z = -5 + pelota.geometry.parameters.radius;
+      velocidadZ *= -1; // Invertir la dirección en el eje Z
+    }
+    requestAnimationFrame(animate);
+  }
+
+  // Iniciar la animación
+  animate();
+}
+
 
 function main(){
+  Pelota(0.03,0,0.05)
   cargarArco(8.6, 1.25, Math.PI / 2); //Arco 1
   cargarArco(-8.6, -1.25, -Math.PI / 2); //Arco 2
   agregarPlanoSuelo();
