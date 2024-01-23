@@ -547,9 +547,45 @@ function Pelota(velocidadX,velocidadY,velocidadZ){
   animate();
 }
 
+function Bandera(){
+  const geometry1=new THREE.CylinderGeometry(0.051, 0.051, 3, 32);
+  const material1=new THREE.MeshBasicMaterial({color:'#ff0000'});
+  const palo=new THREE.Mesh(geometry1,material1);
+  palo.position.set(6,0,5)
+  scene.add(palo)
+
+  // triangulo
+  const banderaShape = new THREE.Shape();
+  banderaShape.moveTo(0, 0); 
+  banderaShape.lineTo(1, 0); 
+  banderaShape.lineTo(0.5, 1); 
+  banderaShape.lineTo(0, 0); 
+
+  const extrudeSettings = { depth: 0.1, bevelEnabled: false };
+  const geometry2 = new THREE.ExtrudeGeometry(banderaShape, extrudeSettings);
+  const material2 = new THREE.MeshBasicMaterial({ color: '#0000ff', side:THREE.DoubleSide });
+
+  const bandera = new THREE.Mesh(geometry2, material2);
+  bandera.position.set(6, 1, 5);
+  bandera.rotateZ(-30)
+  scene.add(bandera);
+
+  function animate() {
+    requestAnimationFrame(animate);
+    
+    //bandera.rotation.x += 0.005 * Math.sin(Date.now() * 0.001);
+    bandera.rotation.y += 0.005 * Math.sin(Date.now() * 0.001);
+
+    renderer.render(scene, camera);
+  }
+
+  animate()
+  
+}
 
 function main(){
   Pelota(0.03,0,0.05)
+  Bandera()
   cargarArco(8.6, 1.25, Math.PI / 2); //Arco 1
   cargarArco(-8.6, -1.25, -Math.PI / 2); //Arco 2
   agregarPlanoSuelo();
