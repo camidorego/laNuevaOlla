@@ -1,0 +1,13 @@
+div{
+    position: absolute;
+    top: 50px;
+    width: 300px;
+    border: white;
+    background-color: white;
+    padding: 4px;
+}
+div h3, div p{
+    text-align: center;
+    margin: 3px;
+    color:black;
+}
