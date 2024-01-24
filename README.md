@@ -12,13 +12,13 @@ Construccion del Estadio La Nueva Olla del Club Cerro Porteño con ThreeJS.
 1. Clonar el proyecto
 
 ```
-git clone https://github.com/araceliolmedom/tp-info3.git
+git clone https://github.com/camidorego/laNuevaOlla.git
 ```
 
 2. Ubicarse en el directorio del proyecto e instalar los paquetes necesarios
 
 ```
-cd tp-info3
+cd laNuevaOlla
 npm install
 ```
 
