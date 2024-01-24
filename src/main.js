@@ -495,6 +495,20 @@ function cargarArco(posicionX, posicionZ, rotacionY) {
   );
 }
 
+ // el objeto se mueve desde el penal hasta el arco
+function animateObj(obj, endPosition, startPosition) {
+  function animate() {
+    if (obj.position.x < endPosition) {
+      obj.position.x += 0.03;
+    } else if (obj.position.x >= endPosition) {
+      obj.position.x = startPosition;
+    }
+
+    requestAnimationFrame(animate);
+  }
+  animate()
+}
+
 function Pelota(velocidadX,velocidadY,velocidadZ){
   const geometry=new THREE.SphereGeometry(0.15, 12, 12);
   const pelotaTexture=new THREE.TextureLoader().load('img/soccer.png');
@@ -503,8 +517,9 @@ function Pelota(velocidadX,velocidadY,velocidadZ){
   const material=new THREE.MeshBasicMaterial({side:THREE.DoubleSide, map:pelotaTexture});
   const pelota=new THREE.Mesh(geometry,material);
   
-
-  pelota.position.set(8,0.5,0)
+  pelota.position.set(5, 0.5, 0);
+  
+  //pelota.position.set(8,0.5,0)
   scene.add(pelota)
 
   function animate(){
@@ -512,19 +527,7 @@ function Pelota(velocidadX,velocidadY,velocidadZ){
     pelota.position.y += velocidadY;
     pelota.position.z += velocidadZ;
 
-  //   // Lógica simple para simular rebotes en las paredes de la cancha
-  //   if (pelota.position.x > 10 || pelota.position.x < 0) {
-  //     velocidadX *= -1; // Invertir la dirección en el eje X al llegar a los extremos
-  //   }
-
-  //   if (pelota.position.z > 6 || pelota.position.z < 0) {
-  //     velocidadZ *= -1; // Invertir la dirección en el eje Z al llegar a los extremos
-  //   }
-
-  //   // Llamada a requestAnimationFrame para crear un bucle de animación
-  //   requestAnimationFrame(animate);
-  // }
-  // Lógica para mantener la pelota dentro de los bordes de la cancha
+  // la pelota se mantiene dentro de los bordes de la cancha
     if (pelota.position.x + pelota.geometry.parameters.radius > 9) {
       pelota.position.x = 9 - pelota.geometry.parameters.radius;
       velocidadX *= -1; // Invertir la dirección en el eje X
@@ -542,17 +545,17 @@ function Pelota(velocidadX,velocidadY,velocidadZ){
     }
     requestAnimationFrame(animate);
   }
-
-  // Iniciar la animación
-  animate();
+  animateObj(pelota,8, 5);
+  //animate();
 }
 
-function Bandera(){
+function Bandera(posiX, posiZ){
+  // asta
   const geometry1=new THREE.CylinderGeometry(0.051, 0.051, 3, 32);
-  const material1=new THREE.MeshBasicMaterial({color:'#ff0000'});
-  const palo=new THREE.Mesh(geometry1,material1);
-  palo.position.set(6,0,5)
-  scene.add(palo)
+  const material1=new THREE.MeshBasicMaterial({color:'#6c757d'});
+  const asta=new THREE.Mesh(geometry1,material1);
+  asta.position.set(posiX, 0, posiZ)
+  scene.add(asta)
 
   // triangulo
   const banderaShape = new THREE.Shape();
@@ -563,13 +566,14 @@ function Bandera(){
 
   const extrudeSettings = { depth: 0.1, bevelEnabled: false };
   const geometry2 = new THREE.ExtrudeGeometry(banderaShape, extrudeSettings);
-  const material2 = new THREE.MeshBasicMaterial({ color: '#0000ff', side:THREE.DoubleSide });
+  const material2 = new THREE.MeshBasicMaterial({ color: '#ff0000', side:THREE.DoubleSide });
 
   const bandera = new THREE.Mesh(geometry2, material2);
-  bandera.position.set(6, 1, 5);
+  bandera.position.set(posiX, 1, posiZ);
   bandera.rotateZ(-30)
   scene.add(bandera);
 
+  // para que ondee
   function animate() {
     requestAnimationFrame(animate);
     
@@ -579,13 +583,37 @@ function Bandera(){
     renderer.render(scene, camera);
   }
 
-  animate()
+  animate();
   
 }
 
+function Persona() {
+  const cabezaGeometry = new THREE.SphereGeometry(0.15, 12, 12);
+  const cabezaMaterial = new THREE.MeshBasicMaterial({ color: '#f5cac3' });
+  const cabeza = new THREE.Mesh(cabezaGeometry, cabezaMaterial);
+  cabeza.position.set(5, 1, 0);
+
+  const cuerpoGeometry = new THREE.BoxGeometry(0.3, 1.5, 0.3);
+  const cuerpoMaterial = new THREE.MeshBasicMaterial({ color: '#ff0000' });
+  const cuerpo = new THREE.Mesh(cuerpoGeometry, cuerpoMaterial);
+  cuerpo.position.set(5, 0, 0);
+
+  const persona=new THREE.Object3D();
+  persona.add(cabeza)
+  persona.add(cuerpo)
+  
+  scene.add(persona);
+
+  //animateObj(persona, 2, 0);
+}
+
 function main(){
-  Pelota(0.03,0,0.05)
-  Bandera()
+  Bandera(8, 5) 
+  Bandera(8,-5)
+  Persona()
+  Pelota()
+
+
   cargarArco(8.6, 1.25, Math.PI / 2); //Arco 1
   cargarArco(-8.6, -1.25, -Math.PI / 2); //Arco 2
   agregarPlanoSuelo();
